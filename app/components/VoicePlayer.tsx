@@ -1,7 +1,6 @@
-"use client";
-
-export function speak(text: string) {
+// components/VoicePlayer.ts
+export default function VoicePlayer(text: string) {
+  if (!text) return;
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-US";
-  speechSynthesis.speak(utterance);
+  window.speechSynthesis.speak(utterance);
 }

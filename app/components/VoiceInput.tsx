@@ -1,44 +1,33 @@
+// components/VoiceInput.tsx
 "use client";
 
-import { useState } from "react";
-
-interface Props {
-  onTranscript: (text: string) => void;
+interface VoiceInputProps {
+  onResult: (transcript: string) => void;
 }
 
-export default function VoiceInput({ onTranscript }: Props) {
-  const [listening, setListening] = useState(false);
-
-  const startListening = () => {
+export default function VoiceInput({ onResult }: VoiceInputProps) {
+  const handleVoice = () => {
     const SpeechRecognition =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert("Speech recognition not supported in this browser.");
+      alert("Your browser does not support Speech Recognition!");
       return;
     }
 
     const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.start();
-    setListening(true);
-
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
-      onTranscript(transcript);
-      setListening(false);
+      onResult(transcript);
     };
-
-    recognition.onerror = () => setListening(false);
+    recognition.start();
   };
 
   return (
     <button
-      onClick={startListening}
-      className="px-4 py-2 bg-black text-white rounded mt-2"
+      onClick={handleVoice}
+      className="px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700"
     >
-      {listening ? "Listening..." : "🎤 Speak"}
+      🎤
     </button>
   );
 }
