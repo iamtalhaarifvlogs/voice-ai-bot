@@ -1,4 +1,3 @@
-// components/VoiceInput.tsx
 "use client";
 
 interface VoiceInputProps {
@@ -6,19 +5,44 @@ interface VoiceInputProps {
 }
 
 export default function VoiceInput({ onResult }: VoiceInputProps) {
+
   const handleVoice = () => {
+
     const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+
     if (!SpeechRecognition) {
-      alert("Your browser does not support Speech Recognition!");
+      alert("Speech Recognition not supported in this browser");
       return;
     }
 
     const recognition = new SpeechRecognition();
+
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      alert("🎤 Listening...");
+    };
+
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
+
+      alert("Voice detected: " + transcript);
+
       onResult(transcript);
     };
+
+    recognition.onerror = (event: any) => {
+      alert("Speech recognition error: " + event.error);
+    };
+
+    recognition.onend = () => {
+      alert("Speech recognition ended");
+    };
+
     recognition.start();
   };
 
