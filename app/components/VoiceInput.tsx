@@ -20,6 +20,7 @@ export default function VoiceInput({ onResult }: VoiceInputProps) {
     const recognition = new SpeechRecognition();
 
     recognition.lang = "en-US";
+    recognition.continuous = true;          // IMPORTANT
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
@@ -28,9 +29,20 @@ export default function VoiceInput({ onResult }: VoiceInputProps) {
     };
 
     recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
+
+      const results = event.results;
+      const last = results.length - 1;
+
+      if (!results[last] || !results[last][0]) {
+        alert("No speech detected in results.");
+        return;
+      }
+
+      const transcript = results[last][0].transcript;
 
       alert("Voice detected: " + transcript);
+
+      recognition.stop(); // stop after getting result
 
       onResult(transcript);
     };
