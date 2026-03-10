@@ -47,10 +47,14 @@ export default function ChatUI({
         reply = getBotReply(text);
       }
 
+      // Log the response to an alert so you see it on mobile
+      alert(`Bot reply: ${reply}`);
+
       setMessages((prev) => [...prev, { role: "ai", content: reply }]);
       VoicePlayer(reply);
     } catch (err) {
       console.error(err);
+      alert("Error: AI request failed.");
       setMessages((prev) => [
         ...prev,
         { role: "ai", content: "Oops! Something went wrong. Try again." },
@@ -90,6 +94,7 @@ export default function ChatUI({
         </button>
         <VoiceInput
           onResult={(transcript: string) => {
+            alert(`Voice input: ${transcript}`); // Log voice input as alert
             setInput(transcript);
             handleSend(transcript);
           }}
